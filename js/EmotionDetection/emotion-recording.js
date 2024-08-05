@@ -9,7 +9,8 @@ let file
 
 const startBtn = document.getElementById('start')
 const stopBtn = document.getElementById('stop')
-// const sendBtn = document.getElementById('send')
+// const recordBtn = document.getElementById('record')
+
 const constraints = { audio: true }
 const mimeType = {mimeType: 'audio/webm'}
 const timeslice = 4000
@@ -20,10 +21,6 @@ async function main() {
     startBtn.addEventListener('click', () => startRecording());
     stopBtn.addEventListener('click', () => stopRecording());
     // sendBtn.addEventListener('click', () => sendRecording());
-}
-
-async function startRecording() {
-
 }
 
 // formatting needs to be very specific.
@@ -45,7 +42,6 @@ async function startRecording() {
 }
 
 function handleSuccess(stream) {
-
     startBtn.disabled = true;
     stopBtn.disabled = false;
     mediaRecorder = new MediaRecorder(stream, mimeType);
@@ -60,7 +56,6 @@ function handleSuccess(stream) {
         saveRecording(recordedBlob)
     };
     mediaRecorder.start(timeslice);
-
 }
 
 function stopRecording() {
@@ -74,7 +69,7 @@ function stopRecording() {
 
 function saveRecording(recordedBlob) {
     convertWebmToWav(recordedBlob)
-    file = new File([recordedBlob],"test.webm")
+    file = new File([recordedBlob],"test.wav")
     console.log(file)
 }
 
@@ -109,6 +104,7 @@ function sendRecording() {
 }
 
 async function convertWebmToWav(webmBlob) {
+    console.log("conversion attempted")
     const ffmpeg = createFFmpeg({ log: false });
     await ffmpeg.load();
   
@@ -121,7 +117,8 @@ async function convertWebmToWav(webmBlob) {
   
     const outputData = ffmpeg.FS('readFile', outputName);
     const outputBlob = new Blob([outputData.buffer], { type: 'audio/wav' });
-  
+    console.log("conversion complete")
+
     return outputBlob;
   }
 
