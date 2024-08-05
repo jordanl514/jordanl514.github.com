@@ -1,5 +1,5 @@
-import ffmpeg from 'ffmpeg.js';
-// adjustments to emotion-recording.html
+import FFmpeg from 'ffmpeg.js';
+// adjustments to emotion-recording.js
 
 const API_ENDPOINT = 'placeholder'
 
