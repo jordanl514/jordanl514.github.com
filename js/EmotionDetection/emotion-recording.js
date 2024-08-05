@@ -15,7 +15,7 @@ const constraints = { audio: true }
 const mimeType = {mimeType: 'audio/webm'}
 const timeslice = 4000
 
-async function main() {
+function main() {
     let debug = MediaRecorder.isTypeSupported('audio/webm') // false
     console.log(debug)
     startBtn.addEventListener('click', () => startRecording());
@@ -122,4 +122,6 @@ async function convertWebmToWav(webmBlob) {
     return outputBlob;
   }
 
+  //44100 kh
+  //mono
 main()
