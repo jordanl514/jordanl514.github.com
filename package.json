@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.10"
+    "ffmpeg.js": "^4.2.9003"
   }
 }
