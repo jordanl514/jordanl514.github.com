@@ -1,6 +1,7 @@
-import { FFmpeg } from 'ffmpeg.js'
+console.log("DEBUG")
+import ffmpeg from 'ffmpeg.js'
 // adjustments to emotion-recording.js
-
+//
 const API_ENDPOINT = 'placeholder'
 
 let mediaRecorder
@@ -109,17 +110,17 @@ async function convertWebmToWav(webmBlob) {
     //44100 kh
     //mono
     console.log("conversion attempted")
-    const ffmpeg = new FFmpeg({ log: false });
-    await ffmpeg.load();
+    const ffmpegObj = new FFmpeg({ log: false });
+    await ffmpegObj.load();
   
     const inputName = 'input.webm';
     const outputName = 'output.mp3';
   
-    ffmpeg.FS('writeFile', inputName, await fetch(webmBlob).then((res) => res.arrayBuffer()));
+    ffmpegObj.FS('writeFile', inputName, await fetch(webmBlob).then((res) => res.arrayBuffer()));
   
-    await ffmpeg.run('-i', inputName, outputName);
+    await ffmpegObj.run('-i', inputName, outputName);
   
-    const outputData = ffmpeg.FS('readFile', outputName);
+    const outputData = ffmpegObj.FS('readFile', outputName);
     const outputBlob = new Blob([outputData.buffer], { type: 'audio/wav' });
     console.log("conversion complete")
 
