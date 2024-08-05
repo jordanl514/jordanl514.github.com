@@ -1,4 +1,4 @@
-import * as FFmpeg from ffmpeg;
+import * as FFmpeg from 'ffmpeg';
 
 const API_ENDPOINT = 'placeholder'
 
