@@ -1,4 +1,4 @@
-import * as FFmpeg from '@ffmpeg/ffmpeg';
+import * as FFmpeg from ffmpeg;
 
 const API_ENDPOINT = 'placeholder'
 
@@ -16,6 +16,7 @@ const mimeType = {mimeType: 'audio/webm'}
 const timeslice = 4000
 
 function main() {
+    console.log("main() executed")
     let debug = MediaRecorder.isTypeSupported('audio/webm') // false
     console.log(debug)
     startBtn.addEventListener('click', () => startRecording());
@@ -104,6 +105,8 @@ function sendRecording() {
 }
 
 async function convertWebmToWav(webmBlob) {
+    //44100 kh
+    //mono
     console.log("conversion attempted")
     const ffmpeg = createFFmpeg({ log: false });
     await ffmpeg.load();
@@ -122,6 +125,5 @@ async function convertWebmToWav(webmBlob) {
     return outputBlob;
   }
 
-  //44100 kh
-  //mono
+
 main()
