@@ -1,5 +1,6 @@
 console.log("DEBUG")
-import ffmpeg from 'ffmpeg.js'
+import { createFFmpeg } from '@ffmpeg/ffmpeg/dist/ffmpeg.min.js';
+
 // adjustments to emotion-recording.js
 //
 const API_ENDPOINT = 'placeholder'
@@ -110,7 +111,7 @@ async function convertWebmToWav(webmBlob) {
     //44100 kh
     //mono
     console.log("conversion attempted")
-    const ffmpegObj = new FFmpeg({ log: false });
+    const ffmpegObj = createFFmpeg({ log: false });
     await ffmpegObj.load();
   
     const inputName = 'input.webm';
