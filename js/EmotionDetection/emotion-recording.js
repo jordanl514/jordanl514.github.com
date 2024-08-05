@@ -109,7 +109,7 @@ async function convertWebmToWav(webmBlob) {
     //44100 kh
     //mono
     console.log("conversion attempted")
-    const ffmpeg = createFFmpeg({ log: false });
+    const ffmpeg = new FFmpeg({ log: false });
     await ffmpeg.load();
   
     const inputName = 'input.webm';
