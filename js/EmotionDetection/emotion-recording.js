@@ -91,10 +91,10 @@ async function convertWebmToWav(webmBlob) {
     // const path = "../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js"
 
     await ffmpeg.load({
-        coreURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.js', "text/javascript"),
-        wasmURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.wasm', "application/wasm")
-        // coreURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js", "text/javascript"),
-        // wasmURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.wasm", "application/wasm")
+        // coreURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.js', "text/javascript"),
+        // wasmURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.wasm', "application/wasm")
+        coreURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js", "text/javascript"),
+        wasmURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.wasm", "application/wasm")
       })
 
     console.log("load complete!")
