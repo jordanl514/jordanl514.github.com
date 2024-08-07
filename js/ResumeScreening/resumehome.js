@@ -6,4 +6,6 @@ function nxtPage() {
     window.location.href = 'aicreation.html'
 }
 
-main()
+document.addEventListener("DOMContentLoaded", function(event){
+    main()
+});

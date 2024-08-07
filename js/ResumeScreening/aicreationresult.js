@@ -33,4 +33,6 @@ function nxtPage() {
     window.location.href = 'talentpool.html'
 };
 
-main()
+document.addEventListener("DOMContentLoaded", function(event){
+    main()
+});

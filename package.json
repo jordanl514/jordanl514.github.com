@@ -1,7 +1,8 @@
 {
   "type": "module",
   "dependencies": {
+    "@ffmpeg/core": "^0.12.6",
     "@ffmpeg/ffmpeg": "^0.12.10",
-    "ffmpeg.js": "^4.2.9003"
+    "@ffmpeg/util": "^0.12.1"
   }
 }

@@ -1,9 +1,9 @@
-console.log("DEBUG")
-import ffmpeg from 'ffmpeg.js';
+import { FFmpeg } from '../../node_modules/@ffmpeg/ffmpeg/dist/esm/index.js'
+import { toBlobURL } from "../../node_modules/@ffmpeg/util/dist/esm/index.js"
 
-// adjustments to emotion-recording.js
-//
+
 const API_ENDPOINT = 'placeholder'
+// const API_ENDPOINT = 'https://beyond-human-ser-api-zl6uya4gbq-uc.a.run.app/analyze-emotion'          //UNCOMMENT FOR FINAL
 
 let mediaRecorder
 let recordedBlob
@@ -12,20 +12,10 @@ let file
 
 const startBtn = document.getElementById('start')
 const stopBtn = document.getElementById('stop')
-// const recordBtn = document.getElementById('record')
-
+// const sendBtn = document.getElementById('send')
 const constraints = { audio: true }
 const mimeType = {mimeType: 'audio/webm'}
 const timeslice = 4000
-
-function main() {
-    console.log("main() executed")
-    let debug = MediaRecorder.isTypeSupported('audio/webm') // false
-    console.log(debug)
-    startBtn.addEventListener('click', () => startRecording());
-    stopBtn.addEventListener('click', () => stopRecording());
-    // sendBtn.addEventListener('click', () => sendRecording());
-}
 
 // formatting needs to be very specific.
 // cutting file into 4s
@@ -36,33 +26,46 @@ function main() {
 // output
 // pass through GPT responses as sessionStorage to next page
 
+async function main() {
+    console.log("main executed")
+    let debug = MediaRecorder.isTypeSupported('audio/webm') // false
+    console.log(debug)
+    startBtn.addEventListener('click', () => startRecording());
+    stopBtn.addEventListener('click', () => stopRecording());
+    // sendBtn.addEventListener('click', () => sendRecording());
+}
+
 async function startRecording() {
+    console.log("Recording Audio...")
     try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        console.log("DEBUG")
+        let stream = await navigator.mediaDevices.getUserMedia(constraints);
         handleSuccess(stream)
     } catch(error) {
         console.log("ERROR", error)
+        return
     }
 }
 
-function handleSuccess(stream) {
+async function handleSuccess(stream) {
     startBtn.disabled = true;
     stopBtn.disabled = false;
     mediaRecorder = new MediaRecorder(stream, mimeType);
     mediaRecorder.ondataavailable = event => {
         audioChunks.push(event.data);
     };
-    mediaRecorder.onstop = () => {
-        console.log("onstop eventhandler sent")
+    mediaRecorder.onstop = async () => {
+        console.log("Audio Recording stopped.")
         // Create the blob when recording stops and store it in a global variable
         recordedBlob = new Blob(audioChunks, { type: mimeType });
         audioChunks = [];
-        saveRecording(recordedBlob)
+        await saveRecording(recordedBlob)
     };
     mediaRecorder.start(timeslice);
+
 }
 
-function stopRecording() {
+async function stopRecording() {
     if (mediaRecorder) {
         //wait for end of 4 seconds. 
         mediaRecorder.stop();
@@ -71,16 +74,48 @@ function stopRecording() {
     document.getElementById('stop').disabled = true;
 }
 
-function saveRecording(recordedBlob) {
-    convertWebmToWav(recordedBlob)
-    file = new File([recordedBlob],"test.wav")
+async function saveRecording(recordedBlob) {
+    await convertWebmToWav(recordedBlob)
+    file = new File([recordedBlob],"test.webm")
     console.log(file)
 }
 
-function sendRecoording() {
-    let formData = new FormData()
-    formData.append()
-}
+async function convertWebmToWav(webmBlob) {
+    
+    const ffmpeg = new FFmpeg({
+        log: false
+    });
+    console.log("loading core!")
+
+    // const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm"
+    // const path = "../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js"
+
+    await ffmpeg.load({
+        coreURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.js', "text/javascript"),
+        wasmURL: await toBlobURL('https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.wasm', "application/wasm")
+        // coreURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js", "text/javascript"),
+        // wasmURL: await toBlobURL("../../node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.wasm", "application/wasm")
+      })
+
+    console.log("load complete!")
+  
+    const inputName = 'input.webm';
+    const outputName = 'output.mp3';
+  
+    ffmpeg.FS('writeFile', inputName, await fetch(webmBlob).then((res) => res.arrayBuffer()));
+  
+    await ffmpeg.run('-i', inputName, outputName);
+  
+    const outputData = ffmpeg.FS('readFile', outputName);
+    const outputBlob = new Blob([outputData.buffer], { type: 'audio/wav' });
+  
+    return outputBlob;
+  }
+
+// function sendRecording() {
+//     let formData = new FormData()
+//     formData.append()
+// }
 function sendRecording() {
     if (recordedBlob) {
         const formData = new FormData();
@@ -107,26 +142,8 @@ function sendRecording() {
     //Save fetched output in session storage and pull to next page.
 }
 
-async function convertWebmToWav(webmBlob) {
-    //44100 kh
-    //mono
-    console.log("conversion attempted")
-    const ffmpegObj = new FFmpeg({ log: false });
-    await ffmpegObj.load();
-  
-    const inputName = 'input.webm';
-    const outputName = 'output.mp3';
-  
-    ffmpegObj.FS('writeFile', inputName, await fetch(webmBlob).then((res) => res.arrayBuffer()));
-  
-    await ffmpegObj.run('-i', inputName, outputName);
-  
-    const outputData = ffmpegObj.FS('readFile', outputName);
-    const outputBlob = new Blob([outputData.buffer], { type: 'audio/wav' });
-    console.log("conversion complete")
-
-    return outputBlob;
-  }
 
 
-main()
+document.addEventListener("DOMContentLoaded", function(event){
+    main()
+});

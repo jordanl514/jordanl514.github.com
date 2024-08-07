@@ -1,4 +1,5 @@
 function main() {
+    console.log("main executed")
     for (let i=1; i<4; i++) {
         let btn = document.getElementById("submit-btn-"+i)
         btn.addEventListener('click', () => nxtPage(i))
@@ -26,4 +27,6 @@ function nxtPage(i) {
     }
 }
 
-main()
+document.addEventListener("DOMContentLoaded", function(event){
+    main()
+});
