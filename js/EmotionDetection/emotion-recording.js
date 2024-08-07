@@ -1,6 +1,7 @@
-import { FFmpeg } from '../../node_modules/@ffmpeg/ffmpeg/dist/esm/index.js'
-import { toBlobURL } from "../../node_modules/@ffmpeg/util/dist/esm/index.js"
-
+// import { FFmpeg } from '../../node_modules/@ffmpeg/ffmpeg/dist/esm/index.js'
+// import { toBlobURL } from "../../node_modules/@ffmpeg/util/dist/esm/index.js"
+import { FFmpeg } from "@ffmpeg/ffmpeg"
+import { toBlobURL } from '@ffmpeg/util'
 
 const API_ENDPOINT = 'placeholder'
 // const API_ENDPOINT = 'https://beyond-human-ser-api-zl6uya4gbq-uc.a.run.app/analyze-emotion'          //UNCOMMENT FOR FINAL
