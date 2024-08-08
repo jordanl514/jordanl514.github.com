@@ -12,15 +12,16 @@ function nxtPage(i) {
     switch(i) {
         case 1:
             console.log("case 1");
-            window.location.href = 'ResumeScreening/resumehome.html';
+            window.location.href = ''
+            window.location.href = '1-ResumeScreening/public/html/resumehome.html';
             break;
         case 2:
             console.log("case 2");
-            window.location.href = 'EmotionDetection/emotionhome.html';
+            window.location.href = '2-EmotionDetection/public/emotionhome.html';
             break;
         case 3:
             console.log("case 3");
-            window.location.href = 'ResumeScreening/saicreation.html';
+            window.location.href = '3-ResumeScreening/public/aicreation.html';
             break;
         default:
             console.log("did not progress");
