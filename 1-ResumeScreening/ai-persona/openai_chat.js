@@ -1,7 +1,7 @@
-import { OpenAI } from 'openai';
-import chalk from 'chalk';
-import fs from 'fs';
-import path from 'path';
+import { OpenAI } from '../../node_modules/openai/index.mjs';
+import chalk from '../../node_modules/chalk/source/index.ts';
+import fs from '../../node_modules/fs/package.json';
+import path from '../../node_modules/npm-run-path/index.js';
 
 // Simple token counting function (not as accurate as tiktoken)
 function numTokensFromMessages(messages) {
