@@ -1,5 +1,4 @@
-// import { AiConversation } from '../../ai-persona/index.js'
-const client = require('../../ai-persona/index.js')
+import { AiConversation } from '../../ai-persona/index.js'
 
 // https://github.com/jordanl514/jordanl514.github.com.git
 
@@ -16,8 +15,10 @@ async function generateHR(i, descStr) {
     console.log(i, descStr);                                                            //DEBUG
 
     /* From Dylan's code, populate jsonBody element */
-    // let jsonBody = client.initalPersonaPrompt(descStr)
-    client.AiConversation.initalPersonaPrompt(descStr)
+    // client.AiConversation.initalPersonaPrompt(descStr)
+    let client = new AiConversation()
+    let test = client.initalPersonaPrompt(descStr)
+    console.log(test)
     
     /* TESTING */
     descStr = "Output from GPT based off of string " + descStr + "."                    //DEBUG
