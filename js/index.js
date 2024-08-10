@@ -2,7 +2,7 @@ const MODULE_COUNT = 3
 
 function main() {
     console.log("main executed")
-    // Disabling lesson 2 and 3 for first delivery
+    // Disabling lesson 2 and 3 for first delivery 
     let btn2 = document.getElementById('submit-btn-2')
     btn2.disabled = true
     document.getElementById('submit-btn-3').disabled = true
