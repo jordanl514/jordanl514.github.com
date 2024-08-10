@@ -1,116 +1,123 @@
-//  import { selectCandidate } from "../ai-persona/index.js";
+import { L1FrontendData } from '../../ai-persona/ai-persona.js'
 
 const INPUT_DELAY = 400                                                     //delay onHover by INPUT_DELAY ms
-const PROFILE_WIDTH = document.getElementById("cand-div-1").offsetWidth
-const CONT_WIDTH = document.getElementById("cand-cont").offsetWidth
+const CAND_PROFILE_WIDTH = document.getElementById("cand-div-1").offsetWidth
+const HR_PROFILE_WIDTH = document.getElementById("pick-cont-1").offsetWidth
+const CAND_CONT_WIDTH = document.getElementById("cand-cont").offsetWidth
+const HR_CONT_WIDTH = document.getElementById("hr-cont-1").offsetWidth
+
 const profileCandidates = JSON.parse(sessionStorage.getItem("candidateDetails"))
 const candidatesSelected = JSON.parse(sessionStorage.getItem("selectedCandidates"))
-const hr1 = JSON.parse(sessionStorage.getItem("hrOutput1"))
-const hr2 = JSON.parse(sessionStorage.getItem("hrOutput2"))
-
-var hr3
+const HR_PROFILES = [JSON.parse(sessionStorage.getItem("hrOutput1")), JSON.parse(sessionStorage.getItem("hrOutput2")), JSON.parse(sessionStorage.getItem("hrOutput3"))]
+const client = new L1FrontendData();
+  
 var hoverTimeouts = []
 var candCount
-var divList = Array(9).fill(null)
+var divList = Array(6).fill(null)
+var contList = Array(3).fill(null)
+
 var elementExpanded = false
 var candidatesArray = []
+var hrSelections
 
+async function main() {
+    //Disable progress until information is populated
+    const contBtn = document.getElementById("submit-btn")
+    contBtn.disabled = true
 
-function main() {
     //Populate Candidates
-    for (let i=1; i < 7; i++) {
+    for (let i=1; i < divList.length + 1; i++) {
         divList[i-1] = document.getElementById(`cand-div-${i}`)
     }
+    for (let i=1; i < contList.length + 1; i++) {
+        contList[i-1] = document.getElementById(`pick-cont-${i}`)
+    }
+    await populateCandidateContainers()
 
-    populateCandidateContainers()
+    //Populate HR Managers
+    await populateHRContainers()
 
-    /* TESTING */
-    const candidateOutput = JSON.parse('[{"candSelected": 2, "reason": "HR 1 selected candidate 2 because...", "hrDesc": null}, {"candSelected": 0, "reason": "HR selected candidate 0 because...", "hrDesc": null}, {"candSelected": 1, "reason": "HR 3 selected candidate 1 because...", "hrDesc": {"name": "John", "age": 30, "comp": "New York", "desc": "some desc for the AI generated HR person"}}]')
-    /*        */
-
-    hr3 = candidateOutput[2].hrDesc
-
-    // Populate Reason
-    /* From Dylan's function, give input of candidates and receive output as JSON Array
-    // candidateOutput = selectCandidate(candidatesSelected)                      //UNCOMMENT FOR FINAL
-    save in variable candidateOutput
-
-    */
-
-    populateHRContainers(candidateOutput)
-
-    document.getElementById("submit-btn").addEventListener('click', () => nxtPage())
+    //Enable progress
+    contBtn.addEventListener('click', () => nxtPage())
+    // contBtn.disabled = false                                                         //Uncomment for final
 }
 
-//HR FUNCTIONS
-function populateHRContainers(jsonBody) {
-    
-    for (let i=1; i < 4; i++) {
-        populateHR(i, jsonBody)
-        let cand = returnCandHR(i)
-        document.getElementById(`pick-desc-${i}`).innerText = jsonBody[i-1].reason
+/*################################################ HR FUNCTIONS ###############################################*/
+async function populateHRContainers() {
+    //Pull HR selections from backend
+    hrSelections = await client.pickApplicant(candidatesSelected, HR_PROFILES)
+
+    //Populate HR fields using that information and add event listeners for hover
+    for (let i=1; i < contList.length + 1; i++) {
+        //Populate HR fields
+        populateHR(i, hrSelections[i-1])
+
         document.getElementById(`pick-cont-${i}`).addEventListener('mouseenter', (event) => scheduleExpand(event, i, "HR"))
-        document.getElementById(`pick-cont-${i}`).addEventListener('mouseleave', () => populateHR(i, jsonBody))
-        document.getElementById(`pick-name-${i}`).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
+        document.getElementById(`pick-cont-${i}`).addEventListener('mouseleave', cancelExpand)
         }
 }
 
 function populateHR(i, jsonBody){
-    /* This function is for populating the candidate fields using a JSON object. */
-    let cand = returnCandHR(i)
-    console.log(hr1,hr2,hr3)
-    console.log(i, jsonBody)
+    /*
+     * Populate individual profiles
+     */
+    let cand = HR_PROFILES[i-1]
+    let candIndex = jsonBody.candSelected - 1
 
-    console.log(cand)
+    //Add some sort of better error check here to handle unsafe return from backend
+    if (candIndex < 0 || candIndex > 8 ) {
+        candIndex = 1
+        console.log("ERROR: candSelected was outside the range of 1-9")
+    } 
 
-    document.getElementById(`pick-desc-${i}`).innerText = jsonBody[i-1].reason
-    document.getElementById(`pick-name-${i}`).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
-    
+    //Populate HR fields
+    document.getElementById(`pick-name-${i}`).innerText = `${cand.name} selected ${profileCandidates[candIndex].name}`
+    document.getElementById(`pick-desc-${i}`).innerText = jsonBody.reason
 }
 
 function expandHR(i) {
-    console.log("expand triggered by " + i)
-    let cand = returnCandHR(i)
-    let content = "<p>"
-    content += "<strong>Age: </strong>" + cand.age + "</br>"
-    content += "<strong>Description: </strong>" + cand.desc + "</br>" + "</p>"
+    /*
+     * Expand profile of HR Manager
+     */
+    //Add event listner for off hover
+    document.getElementById(`pick-cont-${i}`).addEventListener('mouseleave', () => populateHR(i, hrSelections[i-1]))
+
+    let cand = HR_PROFILES[i-1]
+    let content = `<p><strong>Name: </strong>${cand.name}</br>`
+    content += `<strong>Age: </strong>${cand.age}</br>`
+    content += `<strong>Description: </strong>${cand.desc}</p>`
+
+    //Populate HR fields
     document.getElementById(`pick-desc-${i}`).innerHTML = content
-    document.getElementById(`pick-name-${i}`).innerText = cand.name
-
-    if (!elementExpanded){
-        document.getElementById("cand-cont").addEventListener('mouseleave', () => condenseCand(i));
-        elementExpanded = !elementExpanded
-    }
-    // console.log(cand)
+    document.getElementById(`pick-name-${i}`).innerText = `${cand.name}'s Profile`
 }
 
-function returnCandHR(i) {
-    switch (i) {
-        case 1:
-            return hr1
-            break
-        case 2:
-            return hr2
-            break
-        case 3:
-            return hr3
-            break
-        default:
-            console.log("error")
-            break
-    }
+function condenseHR(i) {
+    /*
+     * Revert to reason why HR would hire candidate
+     */
+    //Add event listner for on hover
+    document.getElementById(`pick-cont-${i}`).removeEventListener('mouseleave', () => populateHR(i, hrSelections[i-1]))
+
+    //Populate HR fields
+    populateHR(i, hrSelections[i-1])
 }
 
-//CANDIDATE FUNCTIONS
-function populateCandidateContainers() {
+/*############################################ CANDIDATE FUNCTIONS ############################################*/
+async function populateCandidateContainers() {
+    /*
+     * Populate candidate fields
+     */
+    //Set up array of candidates selected
     for (let i=0; i < candidatesSelected.length; i++) {
         if (candidatesSelected[i]) {
             candidatesArray.push(profileCandidates[i])
         }
     }
-
     candCount = candidatesArray.length
-    for (let i=1; i < 7; i++) {
+
+    //Set number of profiles necessary to display candidates
+    for (let i=1; i < divList.length + 1; i++) {
         if (i < candCount + 1) {
             document.getElementById(`can-name-${i}`).innerText = candidatesArray[i-1].name
             document.getElementById(`can-photo-${i}`).src = candidatesArray[i-1].image
@@ -118,29 +125,23 @@ function populateCandidateContainers() {
             divList[i-1].addEventListener('mouseleave', cancelExpand)
         } else if (i == candCount) {
             //populate document.getElementById("cand-div-"+candCount) with AI genereated candidate
+            //only for last page
         } else {
             divList[i-1].style.display = "none"
         }
     }
 }
 
-function populateCandidate(i, jsonObject){
-    console.log(i,jsonObject)
-    let content = "<p>"
-    content += "<strong>Languages: </strong>" + jsonObject.langs + "</br>"
-    content += "<strong>Graduated: </strong>" + jsonObject.grad + "</br>"
-    content += "<strong>Gender: </strong>" + jsonObject.gender + "</br>"
-    content += "<strong>Experience: </strong>" + jsonObject.exp + "</br>"
-    content += "<strong>Training: </strong>" + jsonObject.training + "</br>"
-    content += "<strong>Skills: </strong>" + jsonObject.skills + "</br>"
-    content += "<strong>Hobbies: </strong>" + jsonObject.hobbies + "</br>"
-    content += "<strong>Soft Skills: </strong>" + jsonObject.softskills + "</p>"
-    document.getElementById(`can-desc-${i}`).innerHTML = content
-}
-
 function expandCand(i) {
-    console.log("expand triggered by " + i)
+    /*
+     * Expand candidate element and display profile
+     */
+
+    //Populate individual candidate profile
     populateCandidate(i, candidatesArray[i-1])
+
+    //Resize element
+    document.getElementById(`cand-div-${i}`).style.width = CAND_CONT_WIDTH + 'px'
 
     //Remove all other elements from view
     for (let j=0; j < candCount; j++) {
@@ -150,23 +151,29 @@ function expandCand(i) {
         }
     }
 
-    document.getElementById(`cand-div-${i}`).style.width = CONT_WIDTH + 'px'
-    
-    //ADD EVENT LISTENER TO BIG CONTAINER
+    //Add event listener to parent container
     if (!elementExpanded){
+        for (let j=0; j<divList.length; j++) {
+            if (divList[j]) {
+                document.getElementById("cand-cont").removeEventListener('mouseleave', () =>condenseCand(j))
+            }
+        }
         document.getElementById("cand-cont").addEventListener('mouseleave', () => condenseCand(i));
         elementExpanded = !elementExpanded
     }
 }
 
 function condenseCand(i) {
-    console.log("condense triggered from " + i)
-    document.getElementById(`can-desc-${i}`).innerText = ""
-    document.getElementById(`cand-div-${i}`).style.width = PROFILE_WIDTH + 'px'
-
+    /*
+     * Condense candidate element back to small version
+     */
+    //Show all elements in view
     for (let j=0; j < candCount; j++) {
         divList[j].style.display = "block"                                        
     }
+    //Reset size and remove text
+    document.getElementById(`can-desc-${i}`).innerText = ""
+    document.getElementById(`cand-div-${i}`).style.width = CAND_PROFILE_WIDTH + 'px'
 
     if (elementExpanded) {
         document.getElementById("cand-cont").removeEventListener('mouseleave', () => condenseCand(i));
@@ -174,10 +181,27 @@ function condenseCand(i) {
     }
 }
 
-//SCHEDULE FUNCTIONS
+function populateCandidate(i, jsonObject){
+    /*
+     * Populate individual candidate
+     */
+    console.log(i,jsonObject)
+    let content = `<p><strong>Languages: </strong>${jsonObject.langs}</br>`
+
+    content += `<strong>Graduated: </strong>${jsonObject.grad}</br>`
+    content += `<strong>Gender: </strong>${jsonObject.gender}</br>`
+    content += `<strong>Experience: </strong>${jsonObject.exp}</br>`
+    content += `<strong>Training: </strong>${jsonObject.training}</br>`
+    content += `<strong>Skills: </strong>${jsonObject.skills}</br>`
+    content += `<strong>Hobbies: </strong>${jsonObject.hobbies}</br></p>`
+    // content += `<strong>Soft Skills: </strong>${jsonObject.grad}</br></p>`
+
+    document.getElementById(`can-desc-${i}`).innerHTML = content
+}
+
+/*############################################# SCHEDULE FUNCTIONS ############################################*/
 function scheduleExpand(event, i, type) {
     const target = event.currentTarget
-    expandTarget = target
     const hoverTimeout = setTimeout(() => {
         switch (type) {
             case "HR":
