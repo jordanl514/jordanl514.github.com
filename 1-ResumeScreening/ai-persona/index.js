@@ -1,8 +1,5 @@
 import { OpenAiManager } from "./openai_chat.js";
 import { ApplicantManager } from "./applicant_graber.js"
-// import readline from 'readline';
-// import fs from 'fs/promises';
-
 
 /***************************************************************************************************
  * The following variables should be user-edited:
@@ -105,7 +102,6 @@ async function main() {
     const applicantManager = new ApplicantManager();
     const openaiManager = new OpenAiManager();
     const aiConversation = new AiConversation();
-
     /***************************************************************************************************
      * The following variables should NOT be user-edited:
      ***************************************************************************************************/

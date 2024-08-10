@@ -9,7 +9,8 @@
             "training": "Sofia holds a Bachelor’s degree in Business Administration from a university in California.",
             "skills": "Excellent leadership and team management skills, proficient in inventory management and sales strategies.",
             "hobbies": "Painting",
-            "softskills": "Strong communication and interpersonal skills, adept at conflict resolution, highly organized."
+            "softskills": "Strong communication and interpersonal skills, adept at conflict resolution, highly organized.",
+            "image": "../../../assets/images/Sofia-Martinez.jpg"
         },
         {
             "name": "Aisha Khan",
@@ -20,7 +21,8 @@
             "training": "Aisha holds a degree in Retail Management and has completed advanced courses in customer service and sales techniques.",
             "skills": "Strong analytical skills, experienced in sales forecasting, proficient in using retail management software.",
             "hobbies": "Running",
-            "softskills": "Excellent customer service skills, strong leadership abilities, effective communication skills."
+            "softskills": "Excellent customer service skills, strong leadership abilities, effective communication skills.",
+            "image": "../../../assets/images/Aisha-Khan.jpg"
         },
         {
             "name": "David Nguyen",
@@ -31,7 +33,8 @@
             "training": "David holds a Bachelor’s degree in Business Management and has attended numerous workshops on retail leadership and merchandising.",
             "skills": "Strong strategic planning skills, proficient in inventory and supply chain management, experienced in team leadership.",
             "hobbies": "Chess",
-            "softskills": "Excellent problem-solving abilities, strong motivational skills, effective communication."
+            "softskills": "Excellent problem-solving abilities, strong motivational skills, effective communication.",
+            "image": "../../../assets/images/David-Nguyen.jpg"
         },
         {
             "name": "Linda Chen",
@@ -42,7 +45,8 @@
             "training": "Linda holds an MBA in Retail Management.",
             "skills": "Extensive experience in strategic planning, team leadership, and sales optimization.",
             "hobbies": "Gardening",
-            "softskills": "Exceptional leadership skills, excellent communication, and strong analytical abilities."
+            "softskills": "Exceptional leadership skills, excellent communication, and strong analytical abilities.",
+            "image": "../../../assets/images/Linda-Chen.jpg"
         },
         {
             "name": "John Smith",
@@ -53,7 +57,8 @@
             "training": "John holds a Master’s degree in Business Management.",
             "skills": "Extensive experience in strategic sales planning, team leadership, and operational management.",
             "hobbies": "Traveling",
-            "softskills": "Strong leadership skills, excellent communication, and problem-solving abilities."
+            "softskills": "Strong leadership skills, excellent communication, and problem-solving abilities.",
+            "image": "../../../assets/images/John-Smith.jpg"
         },
         {
             "name": "Maria Gonzalez",
@@ -64,7 +69,8 @@
             "training": "Maria holds an MBA in International Business.",
             "skills": "Extensive experience in global retail operations, strategic planning, and team management.",
             "hobbies": "Cooking",
-            "softskills": "Exceptional leadership skills, strong analytical abilities, excellent communication skills."
+            "softskills": "Exceptional leadership skills, strong analytical abilities, excellent communication skills.",
+            "image": "../../../assets/images/Maria-Gonzalez.jpg"
         },
         {
             "name": "Emily Chen",
@@ -75,7 +81,8 @@
             "training": "Emily holds a diploma in Retail Management.",
             "skills": "Proficient in customer service, basic inventory management.",
             "hobbies": "Baking",
-            "softskills": "Good communication skills, friendly and approachable."
+            "softskills": "Good communication skills, friendly and approachable.",
+            "image": "../../../assets/images/Emily-Chen.jpg"
         },
         {
             "name": "Carlos Mendes",
@@ -86,7 +93,8 @@
             "training": "Carlos holds a high school diploma.",
             "skills": "Proficient in basic point-of-sale systems and customer service.",
             "hobbies": "Soccer",
-            "softskills": "Good communication skills, friendly and approachable, team player."
+            "softskills": "Good communication skills, friendly and approachable, team player.",
+            "image": "../../../assets/images/Carlos-Mendes.jpg"
         },
         {
             "name": "Priya Sharma",
@@ -97,7 +105,8 @@
             "training": "Priya holds a high school diploma.",
             "skills": "Proficient in basic cash handling and customer service.",
             "hobbies": "Reading",
-            "softskills": "Friendly and approachable, good communication skills."
+            "softskills": "Friendly and approachable, good communication skills.",
+            "image": "../../../assets/images/Priya-Sharma.jpg"
         },
         {
             "name": "Mark Johnson",
@@ -108,7 +117,8 @@
             "training": "Mark holds a high school diploma.",
             "skills": "Basic customer service skills, familiar with basic point-of-sale systems.",
             "hobbies": "Video Games",
-            "softskills": "Enthusiastic and willing to learn, friendly and approachable."
+            "softskills": "Enthusiastic and willing to learn, friendly and approachable.",
+            "image": "../../../assets/images/Mark-Johnson.jpg"
         }
     ]
 }

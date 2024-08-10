@@ -1,22 +1,25 @@
 //  import { selectCandidate } from "../ai-persona/index.js";
+
 const INPUT_DELAY = 400                                                     //delay onHover by INPUT_DELAY ms
 const PROFILE_WIDTH = document.getElementById("cand-div-1").offsetWidth
 const CONT_WIDTH = document.getElementById("cand-cont").offsetWidth
-const profileCandidates = JSON.parse(sessionStorage.getItem("candidateDetails"));
-const candidatesSelected = JSON.parse(sessionStorage.getItem("selectedCandidates"));
-const hr1 = JSON.parse(sessionStorage.getItem("hrOutput1"));
-const hr2 = JSON.parse(sessionStorage.getItem("hrOutput2"));
+const profileCandidates = JSON.parse(sessionStorage.getItem("candidateDetails"))
+const candidatesSelected = JSON.parse(sessionStorage.getItem("selectedCandidates"))
+const hr1 = JSON.parse(sessionStorage.getItem("hrOutput1"))
+const hr2 = JSON.parse(sessionStorage.getItem("hrOutput2"))
 
 var hr3
 var hoverTimeouts = []
 var candCount
 var divList = Array(9).fill(null)
 var elementExpanded = false
+var candidatesArray = []
+
 
 function main() {
     //Populate Candidates
     for (let i=1; i < 7; i++) {
-        divList[i-1] = document.getElementById("cand-div-"+i);
+        divList[i-1] = document.getElementById(`cand-div-${i}`)
     }
 
     populateCandidateContainers()
@@ -29,9 +32,8 @@ function main() {
 
     // Populate Reason
     /* From Dylan's function, give input of candidates and receive output as JSON Array
-
+    // candidateOutput = selectCandidate(candidatesSelected)                      //UNCOMMENT FOR FINAL
     save in variable candidateOutput
-    // const candidateOutput = selectCandidate(candidatesSelected)                      //UNCOMMENT FOR FINAL
 
     */
 
@@ -46,18 +48,24 @@ function populateHRContainers(jsonBody) {
     for (let i=1; i < 4; i++) {
         populateHR(i, jsonBody)
         let cand = returnCandHR(i)
-        document.getElementById("hr-desc-"+i).innerText = jsonBody[i-1].reason
-        document.getElementById("hr-cont-"+i).addEventListener('mouseenter', (event) => scheduleExpand(event, i, "HR"));
-        document.getElementById("hr-cont-"+i).addEventListener('mouseleave', () => populateHR(i, jsonBody));
-        document.getElementById("hr-name-"+i).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
+        document.getElementById(`pick-desc-${i}`).innerText = jsonBody[i-1].reason
+        document.getElementById(`pick-cont-${i}`).addEventListener('mouseenter', (event) => scheduleExpand(event, i, "HR"))
+        document.getElementById(`pick-cont-${i}`).addEventListener('mouseleave', () => populateHR(i, jsonBody))
+        document.getElementById(`pick-name-${i}`).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
         }
 }
 
 function populateHR(i, jsonBody){
     /* This function is for populating the candidate fields using a JSON object. */
     let cand = returnCandHR(i)
-    document.getElementById("hr-desc-"+i).innerText = jsonBody[i-1].reason
-    document.getElementById("hr-name-"+i).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
+    console.log(hr1,hr2,hr3)
+    console.log(i, jsonBody)
+
+    console.log(cand)
+
+    document.getElementById(`pick-desc-${i}`).innerText = jsonBody[i-1].reason
+    document.getElementById(`pick-name-${i}`).innerText = cand.name + " selected " + profileCandidates[jsonBody[i-1].candSelected].name
+    
 }
 
 function expandHR(i) {
@@ -66,8 +74,8 @@ function expandHR(i) {
     let content = "<p>"
     content += "<strong>Age: </strong>" + cand.age + "</br>"
     content += "<strong>Description: </strong>" + cand.desc + "</br>" + "</p>"
-    document.getElementById("hr-desc-"+i).innerHTML = content
-    document.getElementById("hr-name-"+i).innerText = cand.name
+    document.getElementById(`pick-desc-${i}`).innerHTML = content
+    document.getElementById(`pick-name-${i}`).innerText = cand.name
 
     if (!elementExpanded){
         document.getElementById("cand-cont").addEventListener('mouseleave', () => condenseCand(i));
@@ -95,7 +103,6 @@ function returnCandHR(i) {
 
 //CANDIDATE FUNCTIONS
 function populateCandidateContainers() {
-    let candidatesArray = []
     for (let i=0; i < candidatesSelected.length; i++) {
         if (candidatesSelected[i]) {
             candidatesArray.push(profileCandidates[i])
@@ -105,9 +112,10 @@ function populateCandidateContainers() {
     candCount = candidatesArray.length
     for (let i=1; i < 7; i++) {
         if (i < candCount + 1) {
-            document.getElementById("can-name-"+i).innerText = candidatesArray[i-1].name
-            divList[i-1].addEventListener('mouseenter', (event) => scheduleExpand(event, i, "CANDIDATE"));
-            divList[i-1].addEventListener('mouseleave', cancelExpand);
+            document.getElementById(`can-name-${i}`).innerText = candidatesArray[i-1].name
+            document.getElementById(`can-photo-${i}`).src = candidatesArray[i-1].image
+            divList[i-1].addEventListener('mouseenter', (event) => scheduleExpand(event, i, "CANDIDATE"))
+            divList[i-1].addEventListener('mouseleave', cancelExpand)
         } else if (i == candCount) {
             //populate document.getElementById("cand-div-"+candCount) with AI genereated candidate
         } else {
@@ -127,12 +135,12 @@ function populateCandidate(i, jsonObject){
     content += "<strong>Skills: </strong>" + jsonObject.skills + "</br>"
     content += "<strong>Hobbies: </strong>" + jsonObject.hobbies + "</br>"
     content += "<strong>Soft Skills: </strong>" + jsonObject.softskills + "</p>"
-    document.getElementById("can-desc-"+i).innerHTML = content
+    document.getElementById(`can-desc-${i}`).innerHTML = content
 }
 
 function expandCand(i) {
     console.log("expand triggered by " + i)
-    populateCandidate(i, profileCandidates[i-1])
+    populateCandidate(i, candidatesArray[i-1])
 
     //Remove all other elements from view
     for (let j=0; j < candCount; j++) {
@@ -142,7 +150,7 @@ function expandCand(i) {
         }
     }
 
-    document.getElementById("cand-div-"+i).style.width = CONT_WIDTH + 'px'
+    document.getElementById(`cand-div-${i}`).style.width = CONT_WIDTH + 'px'
     
     //ADD EVENT LISTENER TO BIG CONTAINER
     if (!elementExpanded){
@@ -153,8 +161,8 @@ function expandCand(i) {
 
 function condenseCand(i) {
     console.log("condense triggered from " + i)
-    document.getElementById("can-desc-"+i).innerText = ""
-    document.getElementById("cand-div-"+i).style.width = PROFILE_WIDTH + 'px'
+    document.getElementById(`can-desc-${i}`).innerText = ""
+    document.getElementById(`cand-div-${i}`).style.width = PROFILE_WIDTH + 'px'
 
     for (let j=0; j < candCount; j++) {
         divList[j].style.display = "block"                                        
@@ -184,14 +192,14 @@ function scheduleExpand(event, i, type) {
         }
     }, INPUT_DELAY)
 
-    hoverTimeouts[target.id] = hoverTimeout;
+    hoverTimeouts[target.id] = hoverTimeout
 }
 
 function cancelExpand(event) {
-    const target = event.currentTarget;
+    const target = event.currentTarget
     if (hoverTimeouts[target.id]) {
-        clearTimeout(hoverTimeouts[target.id]);
-        delete hoverTimeouts[target.id];
+        clearTimeout(hoverTimeouts[target.id])
+        delete hoverTimeouts[target.id]
     }
 }
 

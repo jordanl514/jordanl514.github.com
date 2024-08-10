@@ -2,7 +2,7 @@ import fs from "fs";
 import OpenAI from "openai";
 import { getAudioDurationInSeconds } from 'get-audio-duration'
 
-const API_KEY = process.env.OPEN_AI_API_KEY  //HANDLE DIFFERENTLY IN FINAL
+const API_KEY = process.env.OPEN_AI_API_KEY
 const SPLIT_SEGMENT = 4
 const AUDIO_LIMIT = 100
 

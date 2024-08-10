@@ -1,10 +1,28 @@
 {
+  "name": "beyond.human_gpt-character",
+  "version": "1.0.0",
+  "description": "A GPT-4 powered character generator for Beyond.Human",
+  "main": "index.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Monash-Tech-School/Beyond.Human_GPT-Character.git"
+  },
+  "author": "Dylan Hor <dylan.hor@monashtechschool.vic.edu.au>",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "get-audio-duration": "^4.0.1",
     "openai": "^4.55.0"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/Monash-Tech-School/Beyond.Human_GPT-Character/issues"
+  },
+  "homepage": "https://github.com/Monash-Tech-School/Beyond.Human_GPT-Character#readme"
 }

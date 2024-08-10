@@ -55,8 +55,10 @@ body {
   color: #333;
 }
 img {
-  max-width: 100%;
   vertical-align: middle;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
   display: inline-block;
 }
 html.w-mod-touch * {
