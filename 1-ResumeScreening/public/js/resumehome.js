@@ -1,4 +1,4 @@
-async function main(){
+function main(){
     document.getElementById("submit-btn").addEventListener('click', () => nxtPage());
 }
 

@@ -1,3 +1,5 @@
+import { L1FrontendData } from '../../ai-persona/ai-persona.js'
+
 const CANDIDATE_LIMIT = [2,5]                                               //Min and Max limit for candidates selected
 const INPUT_DELAY = 400                                                     //delay onHover by INPUT_DELAY ms
 const PROFILE_WIDTH = document.getElementById("cand-div-1").offsetWidth
@@ -5,7 +7,7 @@ const CONT_WIDTH = document.getElementById("cand-cont").offsetWidth
 const UNSELECTED_COLOUR = "#a4d3c5"
 const SELECTED_COLOUR = "#DDBBC2"
 const BORDER_COLOUR = "#af334a"
-
+const client = new L1FrontendData();
 
 var hoverTimeouts = [];
 var candidateSelectedList = Array(9).fill(false)
@@ -28,7 +30,9 @@ async function main() {
         console.error("ERROR:", error)
     })
 
-    console.log(jsonBody)
+    // jsonBody = await client.getApplicants()
+    console.log("jsonBody",jsonBody)
+    
     // jsonBody = JSON.parse(
     //     '[{"name": "Anika Kumari", "langs": "Hindi, English", "grad": "High School, 2006", "gender": "Female", "exp": "Anika has 8 years of experience in retail management, overseeing daily operations, staff management, and customer service in large retail stores.", "training": "Anika holds a Bachelor\'s degree in Business Administration from a university in Mumbai.", "skills": "Proficient in inventory management, team leadership, sales analysis, and customer relationship management.", "hobbies": "cooking", "softskills": " Strong leadership and motivational skills, excellent problem-solving abilities, effective communication with staff and customers."},{"name": "Anika Kumari", "langs": "Hindi, English", "grad": "High School, 2006", "gender": "Female", "exp": "Anika has 8 years of experience in retail management, overseeing daily operations, staff management, and customer service in large retail stores.", "training": "Anika holds a Bachelor\'s degree in Business Administration from a university in Mumbai.", "skills": "Proficient in inventory management, team leadership, sales analysis, and customer relationship management.", "hobbies": "cooking", "softskills": " Strong leadership and motivational skills, excellent problem-solving abilities, effective communication with staff and customers."},{"name": "Anika Kumari", "langs": "Hindi, English", "grad": "High School, 2006", "gender": "Female", "exp": "Anika has 8 years of experience in retail management, overseeing daily operations, staff management, and customer service in large retail stores.", "training": "Anika holds a Bachelor\'s degree in Business Administration from a university in Mumbai.", "skills": "Proficient in inventory management, team leadership, sales analysis, and customer relationship management.", "hobbies": "cooking", "softskills": " Strong leadership and motivational skills, excellent problem-solving abilities, effective communication with staff and customers.", "image": "../images/test_profile.png"}]');
     /*         */
@@ -64,6 +68,9 @@ function expand(i) {
     
     //ADD EVENT LISTENER TO BIG CONTAINER
     if (!elementExpanded){
+        for (let j=0; j<10; j++) {
+            document.getElementById("cand-cont").removeEventListener('mouseleave', () =>condense(j))
+        }
         document.getElementById("cand-cont").addEventListener('mouseleave', () => condense(i));
         elementExpanded = !elementExpanded
     }
@@ -110,8 +117,8 @@ function populateCandidate(i, jsonObject){
     content += "<strong>Experience: </strong>" + jsonObject.exp + "</br>"
     content += "<strong>Training: </strong>" + jsonObject.training + "</br>"
     content += "<strong>Skills: </strong>" + jsonObject.skills + "</br>"
-    content += "<strong>Hobbies: </strong>" + jsonObject.hobbies + "</br>"
-    content += "<strong>Soft Skills: </strong>" + jsonObject.softskills + "</p>"
+    content += "<strong>Hobbies: </strong>" + jsonObject.hobbies + "</p>"
+    // content += "<strong>Soft Skills: </strong>" + jsonObject.softskills + "</p>"
     document.getElementById(`can-desc-${i}`).innerHTML = content
 }
 
@@ -141,7 +148,7 @@ function countSelected() {
 
 function scheduleExpand(event, i) {
     const target = event.currentTarget
-    expandTarget = target
+    // expandTarget = target
     const hoverTimeout = setTimeout(() => {
         expand(i);
     }, INPUT_DELAY)

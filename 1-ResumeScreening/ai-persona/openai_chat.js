@@ -1,15 +1,5 @@
-// import { OpenAI } from '../../node_modules/openai/index.mjs';
-// import chalk from '../../node_modules/chalk/source/index.js';
-// import fs from '../../node_modules/fs/package.json';
-// import path from '../../node_modules/path-key/index.js';
-
 import { OpenAI } from 'openai';
 import chalk from 'chalk';
-import fs from 'fs';
-import path from 'path';
-// import dotenv from 'dotenv';
-
-// dotenv.config();
 
 // Simple token counting function (not as accurate as tiktoken)
 function numTokensFromMessages(messages) {
@@ -25,8 +15,11 @@ const info = chalk.hex('#b4befe');
 
 export class OpenAiManager {
     constructor() {
-        this.chatHistory = [];
-        this.client = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
+        this.hr1History = [];
+        this.hr2History = [];
+        this.hr3History = [];
+        this.gptHistory = [];
+        this.client = new OpenAI({ apiKey: 'sk-proj-5bz8Sp1sPYqt3C1w3MhzT3BlbkFJyAD10bUgd1z6hNKBEQwE', dangerouslyAllowBrowser: true });
     }
 
     async chat(prompt = "") {
@@ -43,7 +36,7 @@ export class OpenAiManager {
 
         console.log(process("\nAsking ChatGPT a question..."));
         const completion = await this.client.chat.completions.create({
-            model: "gpt-4",
+            model: "gpt-4o-mini",
             messages: chatQuestion
         });
 
@@ -52,34 +45,118 @@ export class OpenAiManager {
         return openaiAnswer;
     }
 
-    async systemMessage(message = "") {
+    async systemMessage(message = "", hrNumber) {
         if (!message) {
             console.log(error("Didn't receive input!"));
             return;
         }
-        this.chatHistory.push({ role: "system", content: message });
 
-        console.log(info(`Chat History has a current token length of ${numTokensFromMessages(this.chatHistory)}`));
-        while (numTokensFromMessages(this.chatHistory) > 2000) {
-            this.chatHistory.splice(4, 1);; // Remove the fifth message (first after system message)
-            console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.chatHistory)}`));
+        if (hrNumber === 1) {
+            this.hr1History.push({ role: "system", content: message });
+
+            console.log(info(`HR 1 History has a current token length of ${numTokensFromMessages(this.hr1History)}`));
+            while (numTokensFromMessages(this.hr1History) > 2000) {
+                this.hr1History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr1History)}`));
+            }
+        } else if (hrNumber === 2) {
+            this.hr2History.push({ role: "system", content: message });
+
+            console.log(info(`HR 2 History has a current token length of ${numTokensFromMessages(this.hr2History)}`));
+            while (numTokensFromMessages(this.hr2History) > 2000) {
+                this.hr2History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr2History)}`));
+            }
+        } else if (hrNumber === 3) {
+            this.hr3History.push({ role: "system", content: message });
+
+            console.log(info(`HR 3 History has a current token length of ${numTokensFromMessages(this.hr3History)}`));
+            while (numTokensFromMessages(this.hr3History) > 2000) {
+                this.hr3History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr3History)}`));
+            }
+        } else if (hrNumber === 4) {
+            this.hr1History.push({ role: "system", content: message });
+            this.hr2History.push({ role: "system", content: message });
+            this.hr3History.push({ role: "system", content: message });
+
+            console.log(info(`HR 1 History has a current token length of ${numTokensFromMessages(this.hr1History)}`));
+            while (numTokensFromMessages(this.hr1History) > 2000) {
+                this.hr1History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr1History)}`));
+            }
+
+            console.log(info(`HR 2 History has a current token length of ${numTokensFromMessages(this.hr2History)}`));
+            while (numTokensFromMessages(this.hr2History) > 2000) {
+                this.hr2History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr2History)}`));
+            }
+
+            console.log(info(`HR 3 History has a current token length of ${numTokensFromMessages(this.hr3History)}`));
+            while (numTokensFromMessages(this.hr3History) > 2000) {
+                this.hr3History.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.hr3History)}`));
+            }
+        } else if (hrNumber === 5) {
+            this.gptHistory.push({ role: "system", content: message });
+
+            console.log(info(`System History has a current token length of ${numTokensFromMessages(this.gptHistory)}`));
+            while (numTokensFromMessages(this.gptHistory) > 2000) {
+                this.gptHistory.splice(4, 1);; // Remove the fifth message (first after system message)
+                console.log(process(`Popped a message! New token length is: ${numTokensFromMessages(this.gptHistory)}`));
+            }
         }
 
         console.log(result("\nSystem message sent"));
     }
 
-    async chatResponse() {
+    async chatResponse(hrNumber) {
         console.log(process("\nGetting response from OpenAI..."));
-        const completion = await this.client.chat.completions.create({
-            model: "gpt-4",
-            messages: this.chatHistory
-        });
+        if (hrNumber === 1) {
+            const completion = await this.client.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: this.hr1History
+            });
+    
+            this.hr1History.push(completion.choices[0].message);
+    
+            const openaiAnswer = completion.choices[0].message.content;
 
-        this.chatHistory.push(completion.choices[0].message);
+            return openaiAnswer;
+        } else if (hrNumber === 2) {
+            const completion = await this.client.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: this.hr2History
+            });
+    
+            this.hr2History.push(completion.choices[0].message);
+    
+            const openaiAnswer = completion.choices[0].message.content;
 
-        const openaiAnswer = completion.choices[0].message.content;
-        // console.log(result(`\n${openaiAnswer}\n`));
-        return openaiAnswer;
+            return openaiAnswer;
+        } else if (hrNumber === 3) {
+            const completion = await this.client.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: this.hr3History
+            });
+    
+            this.hr3History.push(completion.choices[0].message);
+    
+            const openaiAnswer = completion.choices[0].message.content;
+
+            return openaiAnswer;
+        } else if (hrNumber === 5) {
+            const completion = await this.client.chat.completions.create({
+                model: "gpt-4o-mini",
+                messages: this.gptHistory
+            });
+    
+            this.gptHistory.push(completion.choices[0].message);
+    
+            const openaiAnswer = completion.choices[0].message.content;
+
+            return openaiAnswer;
+        }
     }
 
     async chatWithHistory(prompt = "") {
@@ -98,7 +175,7 @@ export class OpenAiManager {
 
         console.log(process("\nAsking ChatGPT a question..."));
         const completion = await this.client.chat.completions.create({
-            model: "gpt-4",
+            model: "gpt-4o-mini",
             messages: this.chatHistory
         });
 
@@ -124,14 +201,14 @@ export class OpenAiManager {
       }
       
 
-    saveResponseToFile(response, fileName = 'responses.txt') {
-        try {
-            const filePath = path.resolve(fileName);
-            console.log(info(`Saving response to ${filePath}`));
-            fs.writeFileSync(filePath, response + '\n', 'utf8');
-            console.log(result('Response saved successfully.'));
-        } catch (err) {
-            console.log(error(`Error saving response to file: ${err.message}`));
-        }
-    }
+    // saveResponseToFile(response, fileName = 'responses.txt') {
+    //     try {
+    //         const filePath = path.resolve(fileName);
+    //         console.log(info(`Saving response to ${filePath}`));
+    //         fs.writeFileSync(filePath, response + '\n', 'utf8');
+    //         console.log(result('Response saved successfully.'));
+    //     } catch (err) {
+    //         console.log(error(`Error saving response to file: ${err.message}`));
+    //     }
+    // }
 }

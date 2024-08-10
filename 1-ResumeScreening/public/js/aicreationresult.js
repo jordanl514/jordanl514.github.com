@@ -1,32 +1,44 @@
-import { AiConversation } from '../../ai-persona/index.js'
+import { L1FrontendData } from '../../ai-persona/ai-persona.js'
 
-function main() {
-    let descriptions = JSON.parse(sessionStorage.getItem("hrInput"));
-    for (i=0; i < descriptions.length; i++) {
-        console.log(descriptions[i])
+const client = new L1FrontendData();
+
+var descriptionCount
+
+async function main() {
+    //Disable progress until information is populated
+    const contBtn = document.getElementById("submit-btn")
+    contBtn.disabled = true
+
+    //Retrieve hrInput from Session Storage, format to JSON object in correct format for backend.
+    const hrArray = JSON.parse(sessionStorage.getItem("hrInput"));
+    const jsonArray = hrArray.map(desc => ({ desc }));
+
+    //Call to backend
+    const descriptions = await client.setPersonas(jsonArray)
+    descriptionCount = descriptions.length
+
+    //Populate fields
+    for (let i=0; i < descriptionCount; i++) {
         generateHR(i+1, descriptions[i])
     }
-    document.getElementById("submit-btn").addEventListener('click', () => nxtPage());
+
+    //Enable progress
+    contBtn.addEventListener('click', () => nxtPage());
+    contBtn.disabled = false
 }
 
-async function generateHR(i, descStr) {
-    console.log(i, descStr);                                                            //DEBUG
-
-    /* From Dylan's code, populate jsonBody element */
-    let jsonBody = client.initalPersonaPrompt(descStr)
-
+async function generateHR(i, jsonBody) {
+    //Don't populate perfect HR Manager
+    if (i != descriptionCount) {
+        document.getElementById("name-resp-"+i).textContent = jsonBody.name
+        document.getElementById("age-resp-"+i).textContent = jsonBody.age
+        document.getElementById("comp-resp-"+i).textContent = jsonBody.comp
+        document.getElementById("desc-resp-"+i).textContent = jsonBody.desc
+    }
     
-    /* TESTING */
-    // descStr = "Output from GPT based off of string " + descStr + "."
-    // let jsonBody = JSON.parse('{"name": "John", "age": 30, "comp": "New York", "desc": "' + descStr + '"}');  
-    // document.getElementById("desc-resp-"+i).textContent = descStr
-    /*         */
-
-    document.getElementById("name-resp-"+i).textContent = jsonBody.name
-    document.getElementById("age-resp-"+i).textContent = jsonBody.age
-    document.getElementById("comp-resp-"+i).textContent = jsonBody.comp
-    document.getElementById("desc-resp-"+i).textContent = descStr.desc               //COMMENT OUT FOR TESTING
+    //Save all hrManagers in session storage
     sessionStorage.setItem(`hrOutput${i}`, JSON.stringify(jsonBody));
+    console.log("DEBUG",jsonBody)
 };
   
 function nxtPage() {
