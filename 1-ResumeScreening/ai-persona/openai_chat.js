@@ -19,7 +19,7 @@ export class OpenAiManager {
         this.hr2History = [];
         this.hr3History = [];
         this.gptHistory = [];
-        this.client = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY, dangerouslyAllowBrowser: true });
+        this.client = new OpenAI({ apiKey: 'sk-proj-5bz8Sp1sPYqt3C1w3MhzT3BlbkFJyAD10bUgd1z6hNKBEQwE', dangerouslyAllowBrowser: true });
     }
 
     async chat(prompt = "") {
